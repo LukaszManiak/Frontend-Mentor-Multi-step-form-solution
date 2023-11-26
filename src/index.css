@@ -52,6 +52,48 @@ body {
   border: none;
   border-radius: 0.8rem;
   padding: 1.2rem;
+
+  list-style: none;
+}
+
+.steps-list li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.step-number {
+  border: 1px solid var(--white);
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+
+  margin-right: 15px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  color: var(--white);
+  background-color: transparent;
+}
+
+.step-number-selected {
+  border: 1px solid var(--lightBlue);
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+
+  margin-right: 15px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  color: var(--marineBlue);
+  background-color: var(--lightBlue);
+
+  transition: all 0.15s ease-in-out;
 }
 
 .steps {
@@ -72,4 +114,49 @@ input {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.buttons-step-1 {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.back-button {
+  border: none;
+  background-color: transparent;
+
+  padding: 1rem 2rem;
+
+  color: var(--coolGray);
+  cursor: pointer;
+
+  transition: all ease-in-out 0.15s;
+}
+
+.back-button:hover {
+  color: var(--marineBlue);
+}
+
+.next-button {
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+
+  padding: 1rem 2rem;
+
+  background-color: var(--marineBlue);
+  color: var(--white);
+}
+
+.confirm-button {
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+
+  padding: 1rem 2rem;
+
+  background-color: var(--purplishBlue);
+  color: white;
 }

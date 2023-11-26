@@ -25,44 +25,50 @@ function App() {
   );
 }
 
-function StepsList() {
+function StepsList({ curStep }) {
   return (
-    <div className="steps-list">
-      <ul>
-        <li>
-          {" "}
-          <div>1</div>{" "}
-          <div>
-            <p>Step 1</p>
-            <p>Your info Step</p>
-          </div>{" "}
-        </li>
-        <li>
-          {" "}
-          <div>2</div>{" "}
-          <div>
-            <p>Step 2</p>
-            <p>Select plan</p>
-          </div>{" "}
-        </li>
-        <li>
-          {" "}
-          <div>3</div>{" "}
-          <div>
-            <p>Step 3</p>
-            <p>Add-ons Step</p>
-          </div>{" "}
-        </li>
-        <li>
-          {" "}
-          <div>4</div>{" "}
-          <div>
-            <p>Step 4</p>
-            <p>Summary</p>
-          </div>{" "}
-        </li>
-      </ul>
-    </div>
+    <ul className="steps-list">
+      <li>
+        {" "}
+        <div className={curStep === 1 ? "step-number-selected" : "step-number"}>
+          1
+        </div>{" "}
+        <div>
+          <p>Step 1</p>
+          <p>Your info Step</p>
+        </div>{" "}
+      </li>
+      <li>
+        {" "}
+        <div className={curStep === 2 ? "step-number-selected" : "step-number"}>
+          2
+        </div>{" "}
+        <div>
+          <p>Step 2</p>
+          <p>Select plan</p>
+        </div>{" "}
+      </li>
+      <li>
+        {" "}
+        <div className={curStep === 3 ? "step-number-selected" : "step-number"}>
+          3
+        </div>{" "}
+        <div>
+          <p>Step 3</p>
+          <p>Add-ons Step</p>
+        </div>{" "}
+      </li>
+      <li>
+        {" "}
+        <div className={curStep >= 4 ? "step-number-selected" : "step-number"}>
+          4
+        </div>{" "}
+        <div>
+          <p>Step 4</p>
+          <p>Summary</p>
+        </div>{" "}
+      </li>
+    </ul>
   );
 }
 
@@ -217,18 +223,32 @@ function ThankYou() {
 // Buttons components
 function Buttons({ curStep, onGoNext, onGoBack }) {
   return (
-    <div className="buttons">
+    <div className={curStep !== 1 ? "buttons" : "buttons-step-1"}>
       {curStep > 1 && curStep < 5 && (
-        <Button onClick={onGoBack}>Go Back</Button>
+        <Button className={"back-button"} onClick={onGoBack}>
+          Go Back
+        </Button>
       )}
-      {curStep <= 3 && <Button onClick={onGoNext}>Next</Button>}
-      {curStep === 4 && <Button onClick={onGoNext}>Confirm</Button>}
+      {curStep <= 3 && (
+        <Button className={"next-button"} onClick={onGoNext}>
+          Next
+        </Button>
+      )}
+      {curStep === 4 && (
+        <Button className={"confirm-button"} onClick={onGoNext}>
+          Confirm
+        </Button>
+      )}
     </div>
   );
 }
 
-function Button({ children, onClick }) {
-  return <button onClick={() => onClick()}>{children}</button>;
+function Button({ children, onClick, className }) {
+  return (
+    <button className={className} onClick={() => onClick()}>
+      {children}
+    </button>
+  );
 }
 
 // Challenge by Frontend Mentor. Coded by Your Name Here.
