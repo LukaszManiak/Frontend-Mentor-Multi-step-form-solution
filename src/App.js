@@ -4,14 +4,17 @@ function App() {
   const [curStep, setCurStep] = useState(1);
 
   function handleNextStep() {
+    if (curStep >= 5) return;
     setCurStep((s) => s + 1);
   }
   function handleBackStep() {
+    if (curStep <= 1) return;
     setCurStep((s) => s - 1);
   }
 
+  console.log(curStep);
   return (
-    <div className="App">
+    <div className="app">
       <StepsList curStep={curStep} />
       <Steps
         curStep={curStep}
@@ -24,7 +27,7 @@ function App() {
 
 function StepsList() {
   return (
-    <div>
+    <div className="steps-list">
       <ul>
         <li>
           {" "}
@@ -65,7 +68,7 @@ function StepsList() {
 
 function Steps({ curStep, onGoNext, onGoBack }) {
   return (
-    <div>
+    <div className="steps">
       <Step curStep={curStep} />
       <Buttons curStep={curStep} onGoNext={onGoNext} onGoBack={onGoBack} />
     </div>
@@ -79,6 +82,7 @@ function Step({ curStep }) {
       {curStep === 2 && <SelectPlan />}
       {curStep === 3 && <PickAddOns />}
       {curStep === 4 && <FinishingStep />}
+      {curStep === 5 && <ThankYou />}
     </>
   );
 }
@@ -91,16 +95,16 @@ function PersonalInfo() {
       <p>Please provide your name, email address, and phone number.</p>
 
       <div>
-        <label for="name">Name</label>
+        <label htmlFor="name">Name</label>
         <input id="name" type="text" name="" placeholder="e.g. Stephen King" />
-        <label for="email">Email Address</label>
+        <label htmlFor="email">Email Address</label>
         <input
           id="email"
           type="text"
           name=""
           placeholder="e.g. stephenking@lorem.com"
         />
-        <label for="number">Phone Number</label>
+        <label htmlFor="number">Phone Number</label>
         <input
           id="number"
           type="number"
@@ -214,15 +218,17 @@ function ThankYou() {
 function Buttons({ curStep, onGoNext, onGoBack }) {
   return (
     <div className="buttons">
-      <Button>Go Back</Button>
-      <Button>Next</Button>
-      {/* <Button>Confirm</Button> */}
+      {curStep > 1 && curStep < 5 && (
+        <Button onClick={onGoBack}>Go Back</Button>
+      )}
+      {curStep <= 3 && <Button onClick={onGoNext}>Next</Button>}
+      {curStep === 4 && <Button onClick={onGoNext}>Confirm</Button>}
     </div>
   );
 }
 
 function Button({ children, onClick }) {
-  return <button onClick={() => onClick}>{children}</button>;
+  return <button onClick={() => onClick()}>{children}</button>;
 }
 
 // Challenge by Frontend Mentor. Coded by Your Name Here.
