@@ -109,6 +109,129 @@ input {
   display: block;
 }
 
+.personal-inputs {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  gap: 30px;
+}
+.personal-inputs p {
+}
+
+.personal-inputs input {
+  width: 100%;
+  margin-top: -30px;
+  padding: 10px 20px;
+  border: solid 1px var(--marineBlue);
+  border-radius: 5px;
+}
+
+.select-plan-step {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  height: 80%;
+  width: 70%;
+}
+.plans-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  height: 100%;
+  width: 100%;
+}
+.plan {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px;
+  width: 30%;
+  height: 60%;
+
+  border: solid 2px var(--marineBlue);
+  border-radius: 0.8rem;
+
+  cursor: pointer;
+}
+.period-select-container {
+  width: 100%;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 0.4rem;
+
+  background-color: var(--lightGray);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.add-ons-step {
+  display: flex;
+  flex-direction: column;
+
+  align-items: flex-start;
+
+  height: 80%;
+  width: 70%;
+}
+.add-ons-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+
+  margin-top: 30px;
+  width: 100%;
+}
+.add-on {
+  border: solid 1px var(--coolGray);
+  border-radius: 0.4rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+  padding: 20px;
+  cursor: pointer;
+}
+
+.add-on-selected {
+  border: solid 1px var(--marineBlue);
+  border-radius: 0.4rem;
+  background-color: var(--pastelBlue);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+  padding: 20px;
+  cursor: pointer;
+
+  transition: all ease-in-out 0.15s;
+}
+
+.thank-you-step {
+  height: 100%;
+  width: 60%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 20px;
+
+  text-align: center;
+}
+
 .buttons {
   width: 100%;
   display: flex;

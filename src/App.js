@@ -1,5 +1,19 @@
 import { useState } from "react";
 import "./index.css";
+
+// images
+
+// icons
+import thankYouIcon from "./assets/images/icon-thank-you.svg";
+import advancedIcon from "./assets/images/icon-advanced.svg";
+import arcadeIcon from "./assets/images/icon-arcade.svg";
+import checkmarkIcon from "./assets/images/icon-checkmark.svg";
+import proIcon from "./assets/images/icon-pro.svg";
+
+// bg
+import sideBarBgDesktop from "./assets/images/bg-sidebar-desktop.svg";
+import sideBarBgMobile from "./assets/images/bg-sidebar-mobile.svg";
+
 function App() {
   const [curStep, setCurStep] = useState(1);
 
@@ -96,11 +110,11 @@ function Step({ curStep }) {
 // specific steps components
 function PersonalInfo() {
   return (
-    <div>
+    <div className="">
       <h1>Personal info</h1>
       <p>Please provide your name, email address, and phone number.</p>
 
-      <div>
+      <div className="personal-inputs">
         <label htmlFor="name">Name</label>
         <input id="name" type="text" name="" placeholder="e.g. Stephen King" />
         <label htmlFor="email">Email Address</label>
@@ -123,32 +137,32 @@ function PersonalInfo() {
 }
 function SelectPlan() {
   return (
-    <div>
+    <div className="select-plan-step">
       <h1>Select your plan</h1>
       <p>You have the option of monthly or yearly billing.</p>
 
-      <div>
-        <div>
-          <img src="" alt="" />
+      <div className="plans-container">
+        <div className="plan">
+          <img src={arcadeIcon} alt="" />
 
           <p>Arcade</p>
           <p>$9/mo</p>
         </div>
-        <div>
-          <img src="" alt="" />
+        <div className="plan">
+          <img src={advancedIcon} alt="" />
 
           <p>Advanced</p>
           <p>$12/mo</p>
         </div>
-        <div>
-          <img src="" alt="" />
+        <div className="plan">
+          <img src={proIcon} alt="" />
 
           <p>Pro</p>
           <p>$15/mo</p>
         </div>
       </div>
 
-      <div>
+      <div className="period-select-container">
         <p>Monthly</p>
         <Button>switch</Button>
         <p>Yearly</p>
@@ -158,30 +172,53 @@ function SelectPlan() {
 }
 
 function PickAddOns() {
+  const [onlineSelected, setOnlineSelected] = useState(false);
+  const [storageSelected, setStorageSelected] = useState(false);
+  const [customSelected, setCustomSelected] = useState(false);
+
+  function handleOnlineSelect() {
+    setOnlineSelected(!onlineSelected);
+  }
+  function handleStorageSelect() {
+    setStorageSelected(!storageSelected);
+  }
+  function handleCustomSelect() {
+    setCustomSelected(!customSelected);
+  }
+
   return (
-    <div>
+    <div className="add-ons-step">
       <h1>Pick add-ons</h1>
       <p>Add-ons help enhance your gaming experience.</p>
 
-      <div>
-        <div>
-          <input type="checkbox" name="scales" />
+      <div className="add-ons-container">
+        <div
+          onClick={() => handleOnlineSelect()}
+          className={!onlineSelected ? "add-on" : "add-on-selected"}
+        >
+          <input type="checkbox" name="scales" checked={onlineSelected} />
           <div>
             <p>Online service</p>
             <p>Access to multiplayer games</p>
           </div>
           <p>+$1/mo</p>
         </div>
-        <div>
-          <input type="checkbox" name="scales" />
+        <div
+          onClick={() => handleStorageSelect()}
+          className={!storageSelected ? "add-on" : "add-on-selected"}
+        >
+          <input type="checkbox" name="scales" checked={storageSelected} />
           <div>
             <p>Larger storage</p>
             <p>Extra 1TB of cloud save</p>
           </div>
           <p>+$2/mo</p>
         </div>
-        <div>
-          <input type="checkbox" name="scales" />
+        <div
+          onClick={() => handleCustomSelect()}
+          className={!customSelected ? "add-on" : "add-on-selected"}
+        >
+          <input type="checkbox" name="scales" checked={customSelected} />
           <div>
             <p>Customizable Profile</p>
             <p>Custom theme on your profile</p>
@@ -208,8 +245,8 @@ function FinishingStep() {
 
 function ThankYou() {
   return (
-    <div>
-      <img src="" alt="" />
+    <div className="thank-you-step">
+      <img src={thankYouIcon} alt="" />
       <h1>Thank you!</h1>
       <p>
         Thanks for confirming your subscription! We hope you have fun using our
