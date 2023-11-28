@@ -17,6 +17,10 @@ import sideBarBgMobile from "./assets/images/bg-sidebar-mobile.svg";
 function App() {
   const [curStep, setCurStep] = useState(1);
 
+  function handleCustomStep(num) {
+    setCurStep(num);
+  }
+
   function handleNextStep() {
     if (curStep >= 5) return;
     setCurStep((s) => s + 1);
@@ -29,7 +33,7 @@ function App() {
   console.log(curStep);
   return (
     <div className="app">
-      <StepsList curStep={curStep} />
+      <StepsList curStep={curStep} onCustomStep={handleCustomStep} />
       <Steps
         curStep={curStep}
         onGoNext={handleNextStep}
@@ -39,10 +43,10 @@ function App() {
   );
 }
 
-function StepsList({ curStep }) {
+function StepsList({ curStep, onCustomStep }) {
   return (
     <ul className="steps-list">
-      <li>
+      <li onClick={() => onCustomStep(1)}>
         {" "}
         <div className={curStep === 1 ? "step-number-selected" : "step-number"}>
           1
@@ -52,7 +56,7 @@ function StepsList({ curStep }) {
           <p>Your info Step</p>
         </div>{" "}
       </li>
-      <li>
+      <li onClick={() => onCustomStep(2)}>
         {" "}
         <div className={curStep === 2 ? "step-number-selected" : "step-number"}>
           2
@@ -62,7 +66,7 @@ function StepsList({ curStep }) {
           <p>Select plan</p>
         </div>{" "}
       </li>
-      <li>
+      <li onClick={() => onCustomStep(3)}>
         {" "}
         <div className={curStep === 3 ? "step-number-selected" : "step-number"}>
           3
@@ -72,7 +76,7 @@ function StepsList({ curStep }) {
           <p>Add-ons Step</p>
         </div>{" "}
       </li>
-      <li>
+      <li onClick={() => onCustomStep(4)}>
         {" "}
         <div className={curStep >= 4 ? "step-number-selected" : "step-number"}>
           4
@@ -109,6 +113,28 @@ function Step({ curStep }) {
 
 // specific steps components
 function PersonalInfo() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState(0);
+
+  console.log(name, email, phoneNumber);
+
+  function handleNameChange(e) {
+    e.preventDefault();
+    const nameInput = e.target.value;
+    setName(nameInput);
+  }
+  function handleEmailChange(e) {
+    e.preventDefault();
+    const emailInput = e.target.value;
+    setEmail(emailInput);
+  }
+  function handleNumberChange(e) {
+    e.preventDefault();
+    const numberInput = +e.target.value;
+    setPhoneNumber(numberInput);
+  }
+
   return (
     <div className="">
       <h1>Personal info</h1>
@@ -116,9 +142,18 @@ function PersonalInfo() {
 
       <div className="personal-inputs">
         <label htmlFor="name">Name</label>
-        <input id="name" type="text" name="" placeholder="e.g. Stephen King" />
+        <input
+          value={name}
+          onChange={(e) => handleNameChange(e)}
+          id="name"
+          type="text"
+          name=""
+          placeholder="e.g. Stephen King"
+        />
         <label htmlFor="email">Email Address</label>
         <input
+          value={email}
+          onChange={(e) => handleEmailChange(e)}
           id="email"
           type="text"
           name=""
@@ -126,6 +161,8 @@ function PersonalInfo() {
         />
         <label htmlFor="number">Phone Number</label>
         <input
+          value={phoneNumber}
+          onChange={(e) => handleNumberChange(e)}
           id="number"
           type="number"
           name=""
@@ -136,25 +173,41 @@ function PersonalInfo() {
   );
 }
 function SelectPlan() {
+  const [plan, setPlan] = useState("Arcade");
+
+  function handlePlanSelect(value) {
+    const selectedPlan = value;
+    setPlan(selectedPlan);
+  }
+
   return (
     <div className="select-plan-step">
       <h1>Select your plan</h1>
       <p>You have the option of monthly or yearly billing.</p>
 
       <div className="plans-container">
-        <div className="plan">
+        <div
+          onClick={() => handlePlanSelect("Arcade")}
+          className={plan !== "Arcade" ? "plan" : "plan-selected"}
+        >
           <img src={arcadeIcon} alt="" />
 
           <p>Arcade</p>
           <p>$9/mo</p>
         </div>
-        <div className="plan">
+        <div
+          onClick={() => handlePlanSelect("Advanced")}
+          className={plan !== "Advanced" ? "plan" : "plan-selected"}
+        >
           <img src={advancedIcon} alt="" />
 
           <p>Advanced</p>
           <p>$12/mo</p>
         </div>
-        <div className="plan">
+        <div
+          onClick={() => handlePlanSelect("Pro")}
+          className={plan !== "Pro" ? "plan" : "plan-selected"}
+        >
           <img src={proIcon} alt="" />
 
           <p>Pro</p>
