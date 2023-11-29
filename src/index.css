@@ -241,6 +241,85 @@ input {
   transition: all ease-in-out 0.15s;
 }
 
+.checked {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 0.3rem;
+
+  border: solid 2px var(--marineBlue);
+  background-color: var(--marineBlue);
+}
+.un-checked {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 0.3rem;
+
+  border: solid 2px var(--magnolia);
+  background-color: var(--white);
+}
+.finishing-step {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: flex-start;
+
+  height: 80%;
+  width: 70%;
+}
+
+.sum-up-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 0px 0px 10px 0px;
+  border: none;
+  border-radius: 0.7rem;
+  width: 100%;
+
+  background-color: var(--magnolia);
+}
+
+.selected-plan-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  width: 90%;
+  padding: 10px 0px;
+
+  border-bottom: 1px solid var(--lightGray);
+}
+.selected-plan-container button {
+  border: none;
+  background-color: transparent;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.selected-add-on {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  padding: 10px 0px;
+
+  width: 90%;
+}
+.total-sum-up {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  width: 100%;
+}
+
 .thank-you-step {
   height: 100%;
   width: 60%;
@@ -305,4 +384,15 @@ input {
 
   background-color: var(--purplishBlue);
   color: white;
+}
+
+.attribution-p {
+  text-align: center;
+  margin-top: 2%;
+
+  color: var(--marineBlue);
+}
+
+.attribution-link {
+  color: var(--strawberryRed);
 }

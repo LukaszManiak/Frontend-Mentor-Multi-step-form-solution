@@ -32,14 +32,18 @@ function App() {
 
   console.log(curStep);
   return (
-    <div className="app">
-      <StepsList curStep={curStep} onCustomStep={handleCustomStep} />
-      <Steps
-        curStep={curStep}
-        onGoNext={handleNextStep}
-        onGoBack={handleBackStep}
-      />
-    </div>
+    <>
+      <div className="app">
+        <StepsList curStep={curStep} onCustomStep={handleCustomStep} />
+        <Steps
+          curStep={curStep}
+          onGoNext={handleNextStep}
+          onGoBack={handleBackStep}
+          onCustomStep={handleCustomStep}
+        />
+      </div>
+      <AttributionP />
+    </>
   );
 }
 
@@ -90,22 +94,22 @@ function StepsList({ curStep, onCustomStep }) {
   );
 }
 
-function Steps({ curStep, onGoNext, onGoBack }) {
+function Steps({ curStep, onGoNext, onGoBack, onCustomStep }) {
   return (
     <div className="steps">
-      <Step curStep={curStep} />
+      <Step curStep={curStep} onCustomStep={onCustomStep} />
       <Buttons curStep={curStep} onGoNext={onGoNext} onGoBack={onGoBack} />
     </div>
   );
 }
 
-function Step({ curStep }) {
+function Step({ curStep, onCustomStep }) {
   return (
     <>
       {curStep === 1 && <PersonalInfo />}
       {curStep === 2 && <SelectPlan />}
       {curStep === 3 && <PickAddOns />}
-      {curStep === 4 && <FinishingStep />}
+      {curStep === 4 && <FinishingStep onCustomStep={onCustomStep} />}
       {curStep === 5 && <ThankYou />}
     </>
   );
@@ -249,7 +253,9 @@ function PickAddOns() {
           onClick={() => handleOnlineSelect()}
           className={!onlineSelected ? "add-on" : "add-on-selected"}
         >
-          <input type="checkbox" name="scales" checked={onlineSelected} />
+          <div className={onlineSelected ? "checked" : "un-checked"}>
+            <img src={checkmarkIcon} alt="checkboxImg" />
+          </div>
           <div>
             <p>Online service</p>
             <p>Access to multiplayer games</p>
@@ -260,7 +266,9 @@ function PickAddOns() {
           onClick={() => handleStorageSelect()}
           className={!storageSelected ? "add-on" : "add-on-selected"}
         >
-          <input type="checkbox" name="scales" checked={storageSelected} />
+          <div className={storageSelected ? "checked" : "un-checked"}>
+            <img src={checkmarkIcon} alt="checkboxImg" />
+          </div>
           <div>
             <p>Larger storage</p>
             <p>Extra 1TB of cloud save</p>
@@ -271,7 +279,9 @@ function PickAddOns() {
           onClick={() => handleCustomSelect()}
           className={!customSelected ? "add-on" : "add-on-selected"}
         >
-          <input type="checkbox" name="scales" checked={customSelected} />
+          <div className={customSelected ? "checked" : "un-checked"}>
+            <img src={checkmarkIcon} alt="checkboxImg" />
+          </div>
           <div>
             <p>Customizable Profile</p>
             <p>Custom theme on your profile</p>
@@ -283,13 +293,30 @@ function PickAddOns() {
   );
 }
 
-function FinishingStep() {
+function FinishingStep({ curStep, onCustomStep }) {
   return (
-    <div>
+    <div className="finishing-step">
       <h1>Finishing up</h1>
       <p>Double-check everything looks OK before confirming.</p>
-      <div></div>
-      <div>
+      <div className="sum-up-container">
+        <div className="selected-plan-container">
+          <div>
+            <p>Arcade (Monthly)</p>
+            <button onClick={() => onCustomStep(2)}>Change</button>
+          </div>
+          <p>$9/mo</p>
+        </div>
+
+        <div className="selected-add-on">
+          <p>Online service</p>
+          <p>+$1/mo</p>
+        </div>
+        <div className="selected-add-on">
+          <p>Larger storage</p>
+          <p>+$2/mo</p>
+        </div>
+      </div>
+      <div className="total-sum-up">
         <p>Total (per month/year)</p> <p>+$12/mo</p>
       </div>
     </div>
@@ -341,6 +368,27 @@ function Button({ children, onClick, className }) {
   );
 }
 
-// Challenge by Frontend Mentor. Coded by Your Name Here.
+function AttributionP() {
+  return (
+    <p className="attribution-p">
+      Challenge by{" "}
+      <a
+        className="attribution-link"
+        href="https://www.frontendmentor.io/challenges/intro-section-with-dropdown-navigation-ryaPetHE5"
+      >
+        Frontend Mentor
+      </a>
+      . Coded by{" "}
+      <a
+        className="attribution-link"
+        href="https://github.com/LukaszManiak"
+        role="button"
+      >
+        Łukasz Maniak
+      </a>
+      .
+    </p>
+  );
+}
 
 export default App;
