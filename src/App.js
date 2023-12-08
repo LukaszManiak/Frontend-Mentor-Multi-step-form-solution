@@ -17,6 +17,49 @@ import sideBarBgMobile from "./assets/images/bg-sidebar-mobile.svg";
 function App() {
   const [curStep, setCurStep] = useState(1);
 
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState(0);
+
+  console.log(name, email, phoneNumber);
+
+  const [plan, setPlan] = useState("Arcade");
+
+  const [onlineSelected, setOnlineSelected] = useState(false);
+  const [storageSelected, setStorageSelected] = useState(false);
+  const [customSelected, setCustomSelected] = useState(false);
+
+  function handleOnlineSelect() {
+    setOnlineSelected(!onlineSelected);
+  }
+  function handleStorageSelect() {
+    setStorageSelected(!storageSelected);
+  }
+  function handleCustomSelect() {
+    setCustomSelected(!customSelected);
+  }
+
+  function handlePlanSelect(value) {
+    const selectedPlan = value;
+    setPlan(selectedPlan);
+  }
+
+  function handleNameChange(e) {
+    e.preventDefault();
+    const nameInput = e.target.value;
+    setName(nameInput);
+  }
+  function handleEmailChange(e) {
+    e.preventDefault();
+    const emailInput = e.target.value;
+    setEmail(emailInput);
+  }
+  function handleNumberChange(e) {
+    e.preventDefault();
+    const numberInput = +e.target.value;
+    setPhoneNumber(numberInput);
+  }
+
   function handleCustomStep(num) {
     setCurStep(num);
   }
@@ -36,6 +79,20 @@ function App() {
       <div className="app">
         <StepsList curStep={curStep} onCustomStep={handleCustomStep} />
         <Steps
+          onlineSelected={onlineSelected}
+          customSelected={customSelected}
+          storageSelected={storageSelected}
+          onCustomSelect={handleCustomSelect}
+          onStorageSelect={handleStorageSelect}
+          onOnlineSelect={handleOnlineSelect}
+          plan={plan}
+          onSelectPlan={handlePlanSelect}
+          email={email}
+          name={name}
+          phoneNumber={phoneNumber}
+          onNameChange={handleNameChange}
+          onNumberChange={handleNumberChange}
+          onEmailChange={handleEmailChange}
           curStep={curStep}
           onGoNext={handleNextStep}
           onGoBack={handleBackStep}
@@ -94,51 +151,65 @@ function StepsList({ curStep, onCustomStep }) {
   );
 }
 
-function Steps({ curStep, onGoNext, onGoBack, onCustomStep }) {
+function Steps({
+  curStep,
+  onGoNext,
+  onGoBack,
+  onCustomStep,
+  name,
+  email,
+  phoneNumber,
+  onEmailChange,
+  onNameChange,
+  onNumberChange,
+  onSelectPlan,
+  plan,
+  onlineSelected,
+  onOnlineSelect,
+  storageSelected,
+  onStorageSelect,
+  customSelected,
+  onCustomSelect,
+}) {
   return (
     <div className="steps">
-      <Step curStep={curStep} onCustomStep={onCustomStep} />
+      {curStep === 1 && (
+        <PersonalInfo
+          email={email}
+          name={name}
+          phoneNumber={phoneNumber}
+          onNameChange={onNameChange}
+          onNumberChange={onNumberChange}
+          onEmailChange={onEmailChange}
+        />
+      )}
+      {curStep === 2 && <SelectPlan onSelectPlan={onSelectPlan} plan={plan} />}
+      {curStep === 3 && (
+        <PickAddOns
+          onlineSelected={onlineSelected}
+          onOnlineSelect={onOnlineSelect}
+          storageSelected={storageSelected}
+          onStorageSelect={onStorageSelect}
+          customSelected={customSelected}
+          onCustomSelect={onCustomSelect}
+        />
+      )}
+      {curStep === 4 && <FinishingStep onCustomStep={onCustomStep} />}
+      {curStep === 5 && <ThankYou />}
       <Buttons curStep={curStep} onGoNext={onGoNext} onGoBack={onGoBack} />
     </div>
   );
 }
 
-function Step({ curStep, onCustomStep }) {
-  return (
-    <>
-      {curStep === 1 && <PersonalInfo />}
-      {curStep === 2 && <SelectPlan />}
-      {curStep === 3 && <PickAddOns />}
-      {curStep === 4 && <FinishingStep onCustomStep={onCustomStep} />}
-      {curStep === 5 && <ThankYou />}
-    </>
-  );
-}
-
 // specific steps components
-function PersonalInfo() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState(0);
-
-  console.log(name, email, phoneNumber);
-
-  function handleNameChange(e) {
-    e.preventDefault();
-    const nameInput = e.target.value;
-    setName(nameInput);
-  }
-  function handleEmailChange(e) {
-    e.preventDefault();
-    const emailInput = e.target.value;
-    setEmail(emailInput);
-  }
-  function handleNumberChange(e) {
-    e.preventDefault();
-    const numberInput = +e.target.value;
-    setPhoneNumber(numberInput);
-  }
-
+function PersonalInfo({
+  name,
+  email,
+  phoneNumber,
+  onEmailChange,
+  onNameChange,
+  onNumberChange,
+}) {
   return (
     <div className="">
       <h1>Personal info</h1>
@@ -148,7 +219,7 @@ function PersonalInfo() {
         <label htmlFor="name">Name</label>
         <input
           value={name}
-          onChange={(e) => handleNameChange(e)}
+          onChange={(e) => onNameChange(e)}
           id="name"
           type="text"
           name=""
@@ -157,7 +228,7 @@ function PersonalInfo() {
         <label htmlFor="email">Email Address</label>
         <input
           value={email}
-          onChange={(e) => handleEmailChange(e)}
+          onChange={(e) => onEmailChange(e)}
           id="email"
           type="text"
           name=""
@@ -166,7 +237,7 @@ function PersonalInfo() {
         <label htmlFor="number">Phone Number</label>
         <input
           value={phoneNumber}
-          onChange={(e) => handleNumberChange(e)}
+          onChange={(e) => onNumberChange(e)}
           id="number"
           type="number"
           name=""
@@ -176,14 +247,7 @@ function PersonalInfo() {
     </div>
   );
 }
-function SelectPlan() {
-  const [plan, setPlan] = useState("Arcade");
-
-  function handlePlanSelect(value) {
-    const selectedPlan = value;
-    setPlan(selectedPlan);
-  }
-
+function SelectPlan({ plan, onSelectPlan }) {
   return (
     <div className="select-plan-step">
       <h1>Select your plan</h1>
@@ -191,7 +255,7 @@ function SelectPlan() {
 
       <div className="plans-container">
         <div
-          onClick={() => handlePlanSelect("Arcade")}
+          onClick={() => onSelectPlan("Arcade")}
           className={plan !== "Arcade" ? "plan" : "plan-selected"}
         >
           <img src={arcadeIcon} alt="" />
@@ -200,7 +264,7 @@ function SelectPlan() {
           <p>$9/mo</p>
         </div>
         <div
-          onClick={() => handlePlanSelect("Advanced")}
+          onClick={() => onSelectPlan("Advanced")}
           className={plan !== "Advanced" ? "plan" : "plan-selected"}
         >
           <img src={advancedIcon} alt="" />
@@ -209,7 +273,7 @@ function SelectPlan() {
           <p>$12/mo</p>
         </div>
         <div
-          onClick={() => handlePlanSelect("Pro")}
+          onClick={() => onSelectPlan("Pro")}
           className={plan !== "Pro" ? "plan" : "plan-selected"}
         >
           <img src={proIcon} alt="" />
@@ -228,21 +292,14 @@ function SelectPlan() {
   );
 }
 
-function PickAddOns() {
-  const [onlineSelected, setOnlineSelected] = useState(false);
-  const [storageSelected, setStorageSelected] = useState(false);
-  const [customSelected, setCustomSelected] = useState(false);
-
-  function handleOnlineSelect() {
-    setOnlineSelected(!onlineSelected);
-  }
-  function handleStorageSelect() {
-    setStorageSelected(!storageSelected);
-  }
-  function handleCustomSelect() {
-    setCustomSelected(!customSelected);
-  }
-
+function PickAddOns({
+  onlineSelected,
+  onOnlineSelect,
+  storageSelected,
+  onStorageSelect,
+  customSelected,
+  onCustomSelect,
+}) {
   return (
     <div className="add-ons-step">
       <h1>Pick add-ons</h1>
@@ -250,7 +307,7 @@ function PickAddOns() {
 
       <div className="add-ons-container">
         <div
-          onClick={() => handleOnlineSelect()}
+          onClick={() => onOnlineSelect()}
           className={!onlineSelected ? "add-on" : "add-on-selected"}
         >
           <div className={onlineSelected ? "checked" : "un-checked"}>
@@ -263,7 +320,7 @@ function PickAddOns() {
           <p>+$1/mo</p>
         </div>
         <div
-          onClick={() => handleStorageSelect()}
+          onClick={() => onStorageSelect()}
           className={!storageSelected ? "add-on" : "add-on-selected"}
         >
           <div className={storageSelected ? "checked" : "un-checked"}>
@@ -276,7 +333,7 @@ function PickAddOns() {
           <p>+$2/mo</p>
         </div>
         <div
-          onClick={() => handleCustomSelect()}
+          onClick={() => onCustomSelect()}
           className={!customSelected ? "add-on" : "add-on-selected"}
         >
           <div className={customSelected ? "checked" : "un-checked"}>
