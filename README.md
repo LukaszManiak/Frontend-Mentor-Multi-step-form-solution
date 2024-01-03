@@ -33,8 +33,8 @@ Users should be able to:
 
 ### Links
 
-- Solution URL: [GitHub](https://github.com/LukaszManiak/Frontend-Mentor-Intro-section)
-- Live Site URL: [Netlify](https://lucas-introsection.netlify.app/)
+<!-- - Solution URL: [GitHub](https://github.com/LukaszManiak/Frontend-Mentor-Intro-section)
+- Live Site URL: [Netlify](https://lucas-introsection.netlify.app/) -->
 
 ### Built with
 
