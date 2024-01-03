@@ -1,4 +1,4 @@
-import { useState, useReducer } from "react";
+import { useState, useEffect, useReducer } from "react";
 import "../index.css";
 
 // images
@@ -96,6 +96,7 @@ function reducer(state, action) {
 }
 
 function App() {
+  const [mobileView, setMobileView] = useState(false);
   const [
     {
       name,
@@ -110,8 +111,6 @@ function App() {
     },
     dispatch,
   ] = useReducer(reducer, initialState);
-
-  console.log(name, email, phoneNumber);
 
   function handleOnlineSelect() {
     dispatch({ type: "onlineSelection" });
@@ -157,10 +156,40 @@ function App() {
     dispatch({ type: "backStepChange" });
   }
 
+  // handling screen size change
+  useEffect(function () {
+    function handleMobileView() {
+      setMobileView(window.innerWidth > 668);
+    }
+
+    handleMobileView();
+
+    window.addEventListener("resize", handleMobileView);
+
+    // return () => {
+    //   window.removeEventListener("resize", handleMobileView);
+    // };
+  }, []);
+
+  console.log(mobileView);
+
   return (
     <>
+      {!mobileView && (
+        <StepsList
+          curStep={curStep}
+          onCustomStep={handleCustomStep}
+          mobileView={mobileView}
+        />
+      )}
       <div className="app">
-        <StepsList curStep={curStep} onCustomStep={handleCustomStep} />
+        {mobileView && (
+          <StepsList
+            curStep={curStep}
+            onCustomStep={handleCustomStep}
+            mobileView={mobileView}
+          />
+        )}
         <Steps>
           {curStep === 1 && (
             <PersonalInfo
@@ -201,19 +230,29 @@ function App() {
             />
           )}
           {curStep === 5 && <ThankYou />}
-          <Buttons
-            curStep={curStep}
-            onGoNext={handleNextStep}
-            onGoBack={handleBackStep}
-          />
+          {mobileView && (
+            <Buttons
+              curStep={curStep}
+              onGoNext={handleNextStep}
+              onGoBack={handleBackStep}
+            />
+          )}
         </Steps>
       </div>
+      {!mobileView && (
+        <Buttons
+          curStep={curStep}
+          onGoNext={handleNextStep}
+          onGoBack={handleBackStep}
+          mobileView={mobileView}
+        />
+      )}
       <AttributionP />
     </>
   );
 }
 
-function StepsList({ curStep, onCustomStep }) {
+function StepsList({ curStep, onCustomStep, mobileView }) {
   return (
     <ul className="steps-list">
       <li onClick={() => onCustomStep(1)}>
@@ -221,40 +260,48 @@ function StepsList({ curStep, onCustomStep }) {
         <div className={curStep === 1 ? "step-number-selected" : "step-number"}>
           1
         </div>{" "}
-        <div>
-          <p>Step 1</p>
-          <p>Your info Step</p>
-        </div>{" "}
+        {mobileView && (
+          <div>
+            <p>Step 1</p>
+            <p>Your info Step</p>
+          </div>
+        )}{" "}
       </li>
       <li onClick={() => onCustomStep(2)}>
         {" "}
         <div className={curStep === 2 ? "step-number-selected" : "step-number"}>
           2
         </div>{" "}
-        <div>
-          <p>Step 2</p>
-          <p>Select plan</p>
-        </div>{" "}
+        {mobileView && (
+          <div>
+            <p>Step 2</p>
+            <p>Select plan</p>
+          </div>
+        )}{" "}
       </li>
       <li onClick={() => onCustomStep(3)}>
         {" "}
         <div className={curStep === 3 ? "step-number-selected" : "step-number"}>
           3
         </div>{" "}
-        <div>
-          <p>Step 3</p>
-          <p>Add-ons Step</p>
-        </div>{" "}
+        {mobileView && (
+          <div>
+            <p>Step 3</p>
+            <p>Add-ons Step</p>
+          </div>
+        )}{" "}
       </li>
       <li onClick={() => onCustomStep(4)}>
         {" "}
         <div className={curStep >= 4 ? "step-number-selected" : "step-number"}>
           4
         </div>{" "}
-        <div>
-          <p>Step 4</p>
-          <p>Summary</p>
-        </div>{" "}
+        {mobileView && (
+          <div>
+            <p>Step 4</p>
+            <p>Summary</p>
+          </div>
+        )}{" "}
       </li>
     </ul>
   );
@@ -464,9 +511,13 @@ function FinishingStep({
 }
 
 // Buttons components
-function Buttons({ curStep, onGoNext, onGoBack }) {
+function Buttons({ curStep, onGoNext, onGoBack, mobileView }) {
+  // naprawić undefined/false -> true/false
+  console.log(mobileView);
+  let class1 = curStep !== 1 ? "buttons" : "buttons-step-1";
+  let class2 = mobileView === undefined ? " " : "mobile-buttons ";
   return (
-    <div className={curStep !== 1 ? "buttons" : "buttons-step-1"}>
+    <div className={`${class1} ${class2}`}>
       {curStep > 1 && curStep < 5 && (
         <Button className={"back-button"} onClick={onGoBack}>
           Go Back

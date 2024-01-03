@@ -396,3 +396,44 @@ input {
 .attribution-link {
   color: var(--strawberryRed);
 }
+
+.mobile-buttons {
+  position: absolute;
+  width: 100%;
+  padding: 15px;
+  background-color: var(--white);
+  display: flex;
+  bottom: 0;
+  left: 0;
+}
+
+@media (max-width: 1368px) {
+  .app {
+    width: 80%;
+  }
+}
+@media (max-width: 968px) {
+  .app {
+    width: 90%;
+  }
+}
+
+@media (max-width: 668px) {
+  .app {
+    width: 90%;
+    height: auto;
+    flex-direction: column;
+  }
+  .steps-list {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .steps-list li {
+    margin-bottom: 0;
+  }
+  .steps {
+    width: 90%;
+  }
+}
