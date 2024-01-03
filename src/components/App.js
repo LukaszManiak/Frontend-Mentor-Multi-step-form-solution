@@ -235,6 +235,7 @@ function App() {
               curStep={curStep}
               onGoNext={handleNextStep}
               onGoBack={handleBackStep}
+              mobileView={mobileView}
             />
           )}
         </Steps>
@@ -512,12 +513,10 @@ function FinishingStep({
 
 // Buttons components
 function Buttons({ curStep, onGoNext, onGoBack, mobileView }) {
-  // naprawić undefined/false -> true/false
-  console.log(mobileView);
-  let class1 = curStep !== 1 ? "buttons" : "buttons-step-1";
-  let class2 = mobileView === undefined ? " " : "mobile-buttons ";
+  let stepClassName = curStep !== 1 ? "buttons" : "buttons-step-1";
+  let mobileClassName = mobileView ? " " : "mobile-buttons ";
   return (
-    <div className={`${class1} ${class2}`}>
+    <div className={`${stepClassName} ${mobileClassName}`}>
       {curStep > 1 && curStep < 5 && (
         <Button className={"back-button"} onClick={onGoBack}>
           Go Back

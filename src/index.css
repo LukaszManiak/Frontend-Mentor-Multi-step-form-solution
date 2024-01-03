@@ -421,7 +421,7 @@ input {
 @media (max-width: 668px) {
   .app {
     width: 90%;
-    height: auto;
+    height: 55%;
     flex-direction: column;
   }
   .steps-list {
@@ -434,6 +434,13 @@ input {
     margin-bottom: 0;
   }
   .steps {
-    width: 90%;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+  }
+
+  .select-plan-step {
+    width: 80%;
+    height: 100%;
   }
 }
