@@ -1,103 +1,212 @@
-import { useState } from "react";
-import "./index.css";
+import { useState, useReducer } from "react";
+import "../index.css";
 
 // images
 
 // icons
-import thankYouIcon from "./assets/images/icon-thank-you.svg";
-import advancedIcon from "./assets/images/icon-advanced.svg";
-import arcadeIcon from "./assets/images/icon-arcade.svg";
-import checkmarkIcon from "./assets/images/icon-checkmark.svg";
-import proIcon from "./assets/images/icon-pro.svg";
+
+import advancedIcon from "../assets/images/icon-advanced.svg";
+import arcadeIcon from "../assets/images/icon-arcade.svg";
+import checkmarkIcon from "../assets/images/icon-checkmark.svg";
+import proIcon from "../assets/images/icon-pro.svg";
 
 // bg
-import sideBarBgDesktop from "./assets/images/bg-sidebar-desktop.svg";
-import sideBarBgMobile from "./assets/images/bg-sidebar-mobile.svg";
+import sideBarBgDesktop from "../assets/images/bg-sidebar-desktop.svg";
+import sideBarBgMobile from "../assets/images/bg-sidebar-mobile.svg";
+
+// components
+import Steps from "./Steps";
+import AttributionP from "./AttributionP";
+import Button from "./Button";
+import ThankYou from "./ThankYouScreen";
+
+const initialState = {
+  name: "",
+  email: "",
+  phoneNumber: 0,
+  plan: "Arcade",
+  onlineSelected: false,
+  storageSelected: false,
+  customSelected: false,
+  curStep: 1,
+  period: "monthly",
+};
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "onlineSelection":
+      return {
+        ...state,
+        onlineSelected: !state.onlineSelected,
+      };
+    case "storageSelection":
+      return {
+        ...state,
+        storageSelected: !state.storageSelected,
+      };
+    case "customSelection":
+      return {
+        ...state,
+        customSelected: !state.customSelected,
+      };
+    case "planSelection":
+      return {
+        ...state,
+        plan: action.payload,
+      };
+    case "nameChange":
+      return {
+        ...state,
+        name: action.payload,
+      };
+    case "numberChange":
+      return {
+        ...state,
+        phoneNumber: action.payload,
+      };
+    case "emailChange":
+      return {
+        ...state,
+        email: action.payload,
+      };
+    case "customStepChange":
+      return {
+        ...state,
+        curStep: action.payload,
+      };
+    case "nextStepChange":
+      return {
+        ...state,
+        curStep: state.curStep + 1,
+      };
+    case "backStepChange":
+      return {
+        ...state,
+        curStep: state.curStep - 1,
+      };
+    case "periodToggle":
+      return {
+        ...state,
+        period: state.period === "monthly" ? "yearly" : "monthly",
+      };
+
+    default:
+      throw new Error("Unkown");
+  }
+}
 
 function App() {
-  const [curStep, setCurStep] = useState(1);
-
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState(0);
+  const [
+    {
+      name,
+      email,
+      phoneNumber,
+      plan,
+      onlineSelected,
+      storageSelected,
+      customSelected,
+      curStep,
+      period,
+    },
+    dispatch,
+  ] = useReducer(reducer, initialState);
 
   console.log(name, email, phoneNumber);
 
-  const [plan, setPlan] = useState("Arcade");
-
-  const [onlineSelected, setOnlineSelected] = useState(false);
-  const [storageSelected, setStorageSelected] = useState(false);
-  const [customSelected, setCustomSelected] = useState(false);
-
   function handleOnlineSelect() {
-    setOnlineSelected(!onlineSelected);
+    dispatch({ type: "onlineSelection" });
   }
   function handleStorageSelect() {
-    setStorageSelected(!storageSelected);
+    dispatch({ type: "storageSelection" });
   }
   function handleCustomSelect() {
-    setCustomSelected(!customSelected);
+    dispatch({ type: "customSelection" });
   }
 
   function handlePlanSelect(value) {
     const selectedPlan = value;
-    setPlan(selectedPlan);
+    dispatch({ type: "planSelection", payload: selectedPlan });
   }
 
   function handleNameChange(e) {
     e.preventDefault();
     const nameInput = e.target.value;
-    setName(nameInput);
+    dispatch({ type: "nameChange", payload: nameInput });
   }
   function handleEmailChange(e) {
     e.preventDefault();
     const emailInput = e.target.value;
-    setEmail(emailInput);
+    dispatch({ type: "emailChange", payload: emailInput });
   }
   function handleNumberChange(e) {
     e.preventDefault();
     const numberInput = +e.target.value;
-    setPhoneNumber(numberInput);
+    dispatch({ type: "numberChange", payload: numberInput });
   }
 
   function handleCustomStep(num) {
-    setCurStep(num);
+    dispatch({ type: "customStepChange", payload: num });
   }
 
   function handleNextStep() {
     if (curStep >= 5) return;
-    setCurStep((s) => s + 1);
+    dispatch({ type: "nextStepChange" });
   }
   function handleBackStep() {
     if (curStep <= 1) return;
-    setCurStep((s) => s - 1);
+    dispatch({ type: "backStepChange" });
   }
 
-  console.log(curStep);
   return (
     <>
       <div className="app">
         <StepsList curStep={curStep} onCustomStep={handleCustomStep} />
-        <Steps
-          onlineSelected={onlineSelected}
-          customSelected={customSelected}
-          storageSelected={storageSelected}
-          onCustomSelect={handleCustomSelect}
-          onStorageSelect={handleStorageSelect}
-          onOnlineSelect={handleOnlineSelect}
-          plan={plan}
-          onSelectPlan={handlePlanSelect}
-          email={email}
-          name={name}
-          phoneNumber={phoneNumber}
-          onNameChange={handleNameChange}
-          onNumberChange={handleNumberChange}
-          onEmailChange={handleEmailChange}
-          curStep={curStep}
-          onGoNext={handleNextStep}
-          onGoBack={handleBackStep}
-          onCustomStep={handleCustomStep}
-        />
+        <Steps>
+          {curStep === 1 && (
+            <PersonalInfo
+              email={email}
+              name={name}
+              phoneNumber={phoneNumber}
+              onNameChange={handleNameChange}
+              onNumberChange={handleNumberChange}
+              onEmailChange={handleEmailChange}
+            />
+          )}
+          {curStep === 2 && (
+            <SelectPlan
+              onSelectPlan={handlePlanSelect}
+              plan={plan}
+              period={period}
+              dispatch={dispatch}
+            />
+          )}
+          {curStep === 3 && (
+            <PickAddOns
+              onlineSelected={onlineSelected}
+              onOnlineSelect={handleOnlineSelect}
+              storageSelected={storageSelected}
+              onStorageSelect={handleStorageSelect}
+              customSelected={customSelected}
+              onCustomSelect={handleCustomSelect}
+            />
+          )}
+          {curStep === 4 && (
+            <FinishingStep
+              plan={plan}
+              onCustomStep={handleCustomSelect}
+              onlineSelected={onlineSelected}
+              customSelected={customSelected}
+              storageSelected={storageSelected}
+              period={period}
+            />
+          )}
+          {curStep === 5 && <ThankYou />}
+          <Buttons
+            curStep={curStep}
+            onGoNext={handleNextStep}
+            onGoBack={handleBackStep}
+          />
+        </Steps>
       </div>
       <AttributionP />
     </>
@@ -151,56 +260,6 @@ function StepsList({ curStep, onCustomStep }) {
   );
 }
 
-function Steps({
-  curStep,
-  onGoNext,
-  onGoBack,
-  onCustomStep,
-  name,
-  email,
-  phoneNumber,
-  onEmailChange,
-  onNameChange,
-  onNumberChange,
-  onSelectPlan,
-  plan,
-  onlineSelected,
-  onOnlineSelect,
-  storageSelected,
-  onStorageSelect,
-  customSelected,
-  onCustomSelect,
-}) {
-  return (
-    <div className="steps">
-      {curStep === 1 && (
-        <PersonalInfo
-          email={email}
-          name={name}
-          phoneNumber={phoneNumber}
-          onNameChange={onNameChange}
-          onNumberChange={onNumberChange}
-          onEmailChange={onEmailChange}
-        />
-      )}
-      {curStep === 2 && <SelectPlan onSelectPlan={onSelectPlan} plan={plan} />}
-      {curStep === 3 && (
-        <PickAddOns
-          onlineSelected={onlineSelected}
-          onOnlineSelect={onOnlineSelect}
-          storageSelected={storageSelected}
-          onStorageSelect={onStorageSelect}
-          customSelected={customSelected}
-          onCustomSelect={onCustomSelect}
-        />
-      )}
-      {curStep === 4 && <FinishingStep onCustomStep={onCustomStep} />}
-      {curStep === 5 && <ThankYou />}
-      <Buttons curStep={curStep} onGoNext={onGoNext} onGoBack={onGoBack} />
-    </div>
-  );
-}
-
 // specific steps components
 function PersonalInfo({
   name,
@@ -247,7 +306,7 @@ function PersonalInfo({
     </div>
   );
 }
-function SelectPlan({ plan, onSelectPlan }) {
+function SelectPlan({ plan, onSelectPlan, dispatch, period }) {
   return (
     <div className="select-plan-step">
       <h1>Select your plan</h1>
@@ -262,6 +321,7 @@ function SelectPlan({ plan, onSelectPlan }) {
 
           <p>Arcade</p>
           <p>$9/mo</p>
+          {period === "yearly" && <p>2 months for free</p>}
         </div>
         <div
           onClick={() => onSelectPlan("Advanced")}
@@ -271,6 +331,7 @@ function SelectPlan({ plan, onSelectPlan }) {
 
           <p>Advanced</p>
           <p>$12/mo</p>
+          {period === "yearly" && <p>2 months for free</p>}
         </div>
         <div
           onClick={() => onSelectPlan("Pro")}
@@ -280,13 +341,16 @@ function SelectPlan({ plan, onSelectPlan }) {
 
           <p>Pro</p>
           <p>$15/mo</p>
+          {period === "yearly" && <p>2 months for free</p>}
         </div>
       </div>
 
       <div className="period-select-container">
-        <p>Monthly</p>
-        <Button>switch</Button>
-        <p>Yearly</p>
+        {period === "monthly" ? <b>Monthly</b> : <p>Monthly</p>}
+        <Button onClick={() => dispatch({ type: "periodToggle" })}>
+          switch
+        </Button>
+        {period === "yearly" ? <b>Yearly</b> : <p>Yearly</p>}
       </div>
     </div>
   );
@@ -350,7 +414,14 @@ function PickAddOns({
   );
 }
 
-function FinishingStep({ curStep, onCustomStep }) {
+function FinishingStep({
+  onlineSelected,
+  storageSelected,
+  customSelected,
+  onCustomStep,
+  plan,
+  period,
+}) {
   return (
     <div className="finishing-step">
       <h1>Finishing up</h1>
@@ -358,38 +429,36 @@ function FinishingStep({ curStep, onCustomStep }) {
       <div className="sum-up-container">
         <div className="selected-plan-container">
           <div>
-            <p>Arcade (Monthly)</p>
+            <p>
+              {plan} ({period})
+            </p>
             <button onClick={() => onCustomStep(2)}>Change</button>
           </div>
           <p>$9/mo</p>
         </div>
 
-        <div className="selected-add-on">
-          <p>Online service</p>
-          <p>+$1/mo</p>
-        </div>
-        <div className="selected-add-on">
-          <p>Larger storage</p>
-          <p>+$2/mo</p>
-        </div>
+        {onlineSelected && (
+          <div className="selected-add-on">
+            <p>Online service</p>
+            <p>+$1/mo</p>
+          </div>
+        )}
+        {storageSelected && (
+          <div className="selected-add-on">
+            <p>Larger storage</p>
+            <p>+$2/mo</p>
+          </div>
+        )}
+        {customSelected && (
+          <div className="selected-add-on">
+            <p>Custom services</p>
+            <p>+$2/mo</p>
+          </div>
+        )}
       </div>
       <div className="total-sum-up">
-        <p>Total (per month/year)</p> <p>+$12/mo</p>
+        <p>Total (per {period.slice(0, -2)})</p> <p>+$12/mo</p>
       </div>
-    </div>
-  );
-}
-
-function ThankYou() {
-  return (
-    <div className="thank-you-step">
-      <img src={thankYouIcon} alt="" />
-      <h1>Thank you!</h1>
-      <p>
-        Thanks for confirming your subscription! We hope you have fun using our
-        platform. If you ever need support, please feel free to email us at
-        support@loremgaming.com.
-      </p>
     </div>
   );
 }
@@ -414,37 +483,6 @@ function Buttons({ curStep, onGoNext, onGoBack }) {
         </Button>
       )}
     </div>
-  );
-}
-
-function Button({ children, onClick, className }) {
-  return (
-    <button className={className} onClick={() => onClick()}>
-      {children}
-    </button>
-  );
-}
-
-function AttributionP() {
-  return (
-    <p className="attribution-p">
-      Challenge by{" "}
-      <a
-        className="attribution-link"
-        href="https://www.frontendmentor.io/challenges/intro-section-with-dropdown-navigation-ryaPetHE5"
-      >
-        Frontend Mentor
-      </a>
-      . Coded by{" "}
-      <a
-        className="attribution-link"
-        href="https://github.com/LukaszManiak"
-        role="button"
-      >
-        Łukasz Maniak
-      </a>
-      .
-    </p>
   );
 }
 
