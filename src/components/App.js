@@ -17,7 +17,7 @@ import sideBarBgMobile from "../assets/images/bg-sidebar-mobile.svg";
 // components
 import Steps from "./Steps";
 import AttributionP from "./AttributionP";
-import Button from "./Button";
+
 import ThankYou from "./ThankYouScreen";
 
 const initialState = {
@@ -28,8 +28,18 @@ const initialState = {
   onlineSelected: false,
   storageSelected: false,
   customSelected: false,
+
+  totalCost: 0,
+  arcadeCost: 9,
+  advancedCost: 12,
+  proCost: 15,
+
+  onlineCost: 1,
+  storageCost: 2,
+  customCost: 2,
+
   curStep: 1,
-  period: "monthly",
+  period: "Monthly",
 };
 
 function reducer(state, action) {
@@ -75,11 +85,13 @@ function reducer(state, action) {
         curStep: action.payload,
       };
     case "nextStepChange":
+      if (state.curStep >= 5) return state;
       return {
         ...state,
         curStep: state.curStep + 1,
       };
     case "backStepChange":
+      if (state.curStep <= 1) return state;
       return {
         ...state,
         curStep: state.curStep - 1,
@@ -87,7 +99,7 @@ function reducer(state, action) {
     case "periodToggle":
       return {
         ...state,
-        period: state.period === "monthly" ? "yearly" : "monthly",
+        period: state.period === "Monthly" ? "Yearly" : "Monthly",
       };
 
     default:
@@ -108,53 +120,16 @@ function App() {
       customSelected,
       curStep,
       period,
+      totalCost,
+      arcadeCost,
+      advancedCost,
+      proCost,
+      onlineCost,
+      storageCost,
+      customCost,
     },
     dispatch,
   ] = useReducer(reducer, initialState);
-
-  function handleOnlineSelect() {
-    dispatch({ type: "onlineSelection" });
-  }
-  function handleStorageSelect() {
-    dispatch({ type: "storageSelection" });
-  }
-  function handleCustomSelect() {
-    dispatch({ type: "customSelection" });
-  }
-
-  function handlePlanSelect(value) {
-    const selectedPlan = value;
-    dispatch({ type: "planSelection", payload: selectedPlan });
-  }
-
-  function handleNameChange(e) {
-    e.preventDefault();
-    const nameInput = e.target.value;
-    dispatch({ type: "nameChange", payload: nameInput });
-  }
-  function handleEmailChange(e) {
-    e.preventDefault();
-    const emailInput = e.target.value;
-    dispatch({ type: "emailChange", payload: emailInput });
-  }
-  function handleNumberChange(e) {
-    e.preventDefault();
-    const numberInput = +e.target.value;
-    dispatch({ type: "numberChange", payload: numberInput });
-  }
-
-  function handleCustomStep(num) {
-    dispatch({ type: "customStepChange", payload: num });
-  }
-
-  function handleNextStep() {
-    if (curStep >= 5) return;
-    dispatch({ type: "nextStepChange" });
-  }
-  function handleBackStep() {
-    if (curStep <= 1) return;
-    dispatch({ type: "backStepChange" });
-  }
 
   // handling screen size change
   useEffect(function () {
@@ -171,23 +146,21 @@ function App() {
     // };
   }, []);
 
-  console.log(mobileView);
-
   return (
     <>
       {!mobileView && (
         <StepsList
           curStep={curStep}
-          onCustomStep={handleCustomStep}
           mobileView={mobileView}
+          dispatch={dispatch}
         />
       )}
       <div className="app">
         {mobileView && (
           <StepsList
             curStep={curStep}
-            onCustomStep={handleCustomStep}
             mobileView={mobileView}
+            dispatch={dispatch}
           />
         )}
         <Steps>
@@ -196,45 +169,35 @@ function App() {
               email={email}
               name={name}
               phoneNumber={phoneNumber}
-              onNameChange={handleNameChange}
-              onNumberChange={handleNumberChange}
-              onEmailChange={handleEmailChange}
+              dispatch={dispatch}
             />
           )}
           {curStep === 2 && (
-            <SelectPlan
-              onSelectPlan={handlePlanSelect}
-              plan={plan}
-              period={period}
-              dispatch={dispatch}
-            />
+            <SelectPlan plan={plan} period={period} dispatch={dispatch} />
           )}
           {curStep === 3 && (
             <PickAddOns
               onlineSelected={onlineSelected}
-              onOnlineSelect={handleOnlineSelect}
               storageSelected={storageSelected}
-              onStorageSelect={handleStorageSelect}
               customSelected={customSelected}
-              onCustomSelect={handleCustomSelect}
+              dispatch={dispatch}
             />
           )}
           {curStep === 4 && (
             <FinishingStep
               plan={plan}
-              onCustomStep={handleCustomSelect}
               onlineSelected={onlineSelected}
               customSelected={customSelected}
               storageSelected={storageSelected}
               period={period}
+              dispatch={dispatch}
             />
           )}
           {curStep === 5 && <ThankYou />}
           {mobileView && (
             <Buttons
+              dispatch={dispatch}
               curStep={curStep}
-              onGoNext={handleNextStep}
-              onGoBack={handleBackStep}
               mobileView={mobileView}
             />
           )}
@@ -242,9 +205,8 @@ function App() {
       </div>
       {!mobileView && (
         <Buttons
+          dispatch={dispatch}
           curStep={curStep}
-          onGoNext={handleNextStep}
-          onGoBack={handleBackStep}
           mobileView={mobileView}
         />
       )}
@@ -253,10 +215,10 @@ function App() {
   );
 }
 
-function StepsList({ curStep, onCustomStep, mobileView }) {
+function StepsList({ curStep, dispatch, mobileView }) {
   return (
     <ul className="steps-list">
-      <li onClick={() => onCustomStep(1)}>
+      <li onClick={() => dispatch({ type: "customStepChange", payload: 1 })}>
         {" "}
         <div className={curStep === 1 ? "step-number-selected" : "step-number"}>
           1
@@ -268,7 +230,7 @@ function StepsList({ curStep, onCustomStep, mobileView }) {
           </div>
         )}{" "}
       </li>
-      <li onClick={() => onCustomStep(2)}>
+      <li onClick={() => dispatch({ type: "customStepChange", payload: 2 })}>
         {" "}
         <div className={curStep === 2 ? "step-number-selected" : "step-number"}>
           2
@@ -280,7 +242,7 @@ function StepsList({ curStep, onCustomStep, mobileView }) {
           </div>
         )}{" "}
       </li>
-      <li onClick={() => onCustomStep(3)}>
+      <li onClick={() => dispatch({ type: "customStepChange", payload: 3 })}>
         {" "}
         <div className={curStep === 3 ? "step-number-selected" : "step-number"}>
           3
@@ -292,7 +254,7 @@ function StepsList({ curStep, onCustomStep, mobileView }) {
           </div>
         )}{" "}
       </li>
-      <li onClick={() => onCustomStep(4)}>
+      <li onClick={() => dispatch({ type: "customStepChange", payload: 4 })}>
         {" "}
         <div className={curStep >= 4 ? "step-number-selected" : "step-number"}>
           4
@@ -309,14 +271,7 @@ function StepsList({ curStep, onCustomStep, mobileView }) {
 }
 
 // specific steps components
-function PersonalInfo({
-  name,
-  email,
-  phoneNumber,
-  onEmailChange,
-  onNameChange,
-  onNumberChange,
-}) {
+function PersonalInfo({ name, dispatch, email, phoneNumber }) {
   return (
     <div className="">
       <h1>Personal info</h1>
@@ -326,7 +281,9 @@ function PersonalInfo({
         <label htmlFor="name">Name</label>
         <input
           value={name}
-          onChange={(e) => onNameChange(e)}
+          onChange={(e) =>
+            dispatch({ type: "nameChange", payload: e.target.value })
+          }
           id="name"
           type="text"
           name=""
@@ -335,7 +292,9 @@ function PersonalInfo({
         <label htmlFor="email">Email Address</label>
         <input
           value={email}
-          onChange={(e) => onEmailChange(e)}
+          onChange={(e) =>
+            dispatch({ type: "emailChange", payload: e.target.value })
+          }
           id="email"
           type="text"
           name=""
@@ -344,7 +303,9 @@ function PersonalInfo({
         <label htmlFor="number">Phone Number</label>
         <input
           value={phoneNumber}
-          onChange={(e) => onNumberChange(e)}
+          onChange={(e) =>
+            dispatch({ type: "numberChange", payload: e.target.value })
+          }
           id="number"
           type="number"
           name=""
@@ -354,7 +315,7 @@ function PersonalInfo({
     </div>
   );
 }
-function SelectPlan({ plan, onSelectPlan, dispatch, period }) {
+function SelectPlan({ plan, dispatch, period }) {
   return (
     <div className="select-plan-step">
       <h1>Select your plan</h1>
@@ -362,55 +323,55 @@ function SelectPlan({ plan, onSelectPlan, dispatch, period }) {
 
       <div className="plans-container">
         <div
-          onClick={() => onSelectPlan("Arcade")}
+          onClick={() => dispatch({ type: "planSelection", payload: "Arcade" })}
           className={plan !== "Arcade" ? "plan" : "plan-selected"}
         >
           <img src={arcadeIcon} alt="" />
 
           <p>Arcade</p>
           <p>$9/mo</p>
-          {period === "yearly" && <p>2 months for free</p>}
+          {period === "Yearly" && <p>2 months for free</p>}
         </div>
         <div
-          onClick={() => onSelectPlan("Advanced")}
+          onClick={() =>
+            dispatch({ type: "planSelection", payload: "Advanced" })
+          }
           className={plan !== "Advanced" ? "plan" : "plan-selected"}
         >
           <img src={advancedIcon} alt="" />
 
           <p>Advanced</p>
           <p>$12/mo</p>
-          {period === "yearly" && <p>2 months for free</p>}
+          {period === "Yearly" && <p>2 months for free</p>}
         </div>
         <div
-          onClick={() => onSelectPlan("Pro")}
+          onClick={() => dispatch({ type: "planSelection", payload: "Pro" })}
           className={plan !== "Pro" ? "plan" : "plan-selected"}
         >
           <img src={proIcon} alt="" />
 
           <p>Pro</p>
           <p>$15/mo</p>
-          {period === "yearly" && <p>2 months for free</p>}
+          {period === "Yearly" && <p>2 months for free</p>}
         </div>
       </div>
 
       <div className="period-select-container">
-        {period === "monthly" ? <b>Monthly</b> : <p>Monthly</p>}
-        <Button onClick={() => dispatch({ type: "periodToggle" })}>
+        {period === "Monthly" ? <b>Monthly</b> : <p>Monthly</p>}
+        <button onClick={() => dispatch({ type: "periodToggle" })}>
           switch
-        </Button>
-        {period === "yearly" ? <b>Yearly</b> : <p>Yearly</p>}
+        </button>
+        {period === "Yearly" ? <b>Yearly</b> : <p>Yearly</p>}
       </div>
     </div>
   );
 }
 
 function PickAddOns({
+  dispatch,
   onlineSelected,
-  onOnlineSelect,
   storageSelected,
-  onStorageSelect,
   customSelected,
-  onCustomSelect,
 }) {
   return (
     <div className="add-ons-step">
@@ -419,7 +380,7 @@ function PickAddOns({
 
       <div className="add-ons-container">
         <div
-          onClick={() => onOnlineSelect()}
+          onClick={() => dispatch({ type: "onlineSelection" })}
           className={!onlineSelected ? "add-on" : "add-on-selected"}
         >
           <div className={onlineSelected ? "checked" : "un-checked"}>
@@ -432,7 +393,7 @@ function PickAddOns({
           <p>+$1/mo</p>
         </div>
         <div
-          onClick={() => onStorageSelect()}
+          onClick={() => dispatch({ type: "storageSelection" })}
           className={!storageSelected ? "add-on" : "add-on-selected"}
         >
           <div className={storageSelected ? "checked" : "un-checked"}>
@@ -445,7 +406,7 @@ function PickAddOns({
           <p>+$2/mo</p>
         </div>
         <div
-          onClick={() => onCustomSelect()}
+          onClick={() => dispatch({ type: "customSelection" })}
           className={!customSelected ? "add-on" : "add-on-selected"}
         >
           <div className={customSelected ? "checked" : "un-checked"}>
@@ -466,7 +427,7 @@ function FinishingStep({
   onlineSelected,
   storageSelected,
   customSelected,
-  onCustomStep,
+  dispatch,
   plan,
   period,
 }) {
@@ -480,7 +441,11 @@ function FinishingStep({
             <p>
               {plan} ({period})
             </p>
-            <button onClick={() => onCustomStep(2)}>Change</button>
+            <button
+              onClick={() => dispatch({ type: "customStepChange", payload: 2 })}
+            >
+              Change
+            </button>
           </div>
           <p>$9/mo</p>
         </div>
@@ -505,32 +470,41 @@ function FinishingStep({
         )}
       </div>
       <div className="total-sum-up">
-        <p>Total (per {period.slice(0, -2)})</p> <p>+$12/mo</p>
+        <p>Total (per {period.toLowerCase().slice(0, -2)})</p> <p>+$12/mo</p>
       </div>
     </div>
   );
 }
 
 // Buttons components
-function Buttons({ curStep, onGoNext, onGoBack, mobileView }) {
+function Buttons({ curStep, dispatch, mobileView }) {
   let stepClassName = curStep !== 1 ? "buttons" : "buttons-step-1";
   let mobileClassName = mobileView ? " " : "mobile-buttons ";
   return (
     <div className={`${stepClassName} ${mobileClassName}`}>
       {curStep > 1 && curStep < 5 && (
-        <Button className={"back-button"} onClick={onGoBack}>
+        <button
+          className={"back-button"}
+          onClick={() => dispatch({ type: "backStepChange" })}
+        >
           Go Back
-        </Button>
+        </button>
       )}
       {curStep <= 3 && (
-        <Button className={"next-button"} onClick={onGoNext}>
+        <button
+          className={"next-button"}
+          onClick={() => dispatch({ type: "nextStepChange" })}
+        >
           Next
-        </Button>
+        </button>
       )}
       {curStep === 4 && (
-        <Button className={"confirm-button"} onClick={onGoNext}>
+        <button
+          className={"confirm-button"}
+          onClick={() => dispatch({ type: "nextStepChange" })}
+        >
           Confirm
-        </Button>
+        </button>
       )}
     </div>
   );

@@ -158,8 +158,8 @@ input {
   align-items: flex-start;
   padding: 20px;
   width: 30%;
-  height: 60%;
-
+  height: auto;
+  gap: 10px;
   border: solid 2px var(--coolGray);
   border-radius: 0.8rem;
 
@@ -177,7 +177,8 @@ input {
   align-items: flex-start;
   padding: 20px;
   width: 30%;
-  height: 60%;
+  height: auto;
+  gap: 10px;
 
   transition: all ease-in-out 0.15s;
 }
@@ -413,15 +414,22 @@ input {
   }
 }
 @media (max-width: 968px) {
+  body {
+    font-size: 14px;
+  }
   .app {
+    width: 90%;
+    height: 60%;
+  }
+  .select-plan-step {
     width: 90%;
   }
 }
 
 @media (max-width: 668px) {
   .app {
-    width: 90%;
-    height: 55%;
+    width: 95%;
+    height: 50%;
     flex-direction: column;
   }
   .steps-list {
@@ -435,12 +443,18 @@ input {
   }
   .steps {
     justify-content: center;
-    height: 100%;
+    height: 80%;
     width: 100%;
+  }
+  .plan,
+  .plan-selected {
+    padding: 10px;
   }
 
   .select-plan-step {
-    width: 80%;
     height: 100%;
+  }
+  .add-ons-container {
+    margin-top: 10px;
   }
 }
