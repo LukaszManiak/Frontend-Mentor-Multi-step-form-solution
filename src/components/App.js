@@ -17,6 +17,7 @@ import sideBarBgMobile from "../assets/images/bg-sidebar-mobile.svg";
 // components
 import Steps from "./Steps";
 import AttributionP from "./AttributionP";
+import Buttons from "./Buttons";
 
 import ThankYou from "./ThankYouScreen";
 
@@ -131,6 +132,7 @@ function App() {
     dispatch,
   ] = useReducer(reducer, initialState);
 
+  console.log(period, proCost, advancedCost, arcadeCost);
   // handling screen size change
   useEffect(function () {
     function handleMobileView() {
@@ -148,6 +150,7 @@ function App() {
 
   return (
     <>
+      {/* navigate buttons on mobile view */}
       {!mobileView && (
         <StepsList
           curStep={curStep}
@@ -156,6 +159,7 @@ function App() {
         />
       )}
       <div className="app">
+        {/* navigate buttons on desktop view */}
         {mobileView && (
           <StepsList
             curStep={curStep}
@@ -164,6 +168,7 @@ function App() {
           />
         )}
         <Steps>
+          {/* personal information inputs */}
           {curStep === 1 && (
             <PersonalInfo
               email={email}
@@ -172,9 +177,18 @@ function App() {
               dispatch={dispatch}
             />
           )}
+          {/* select plan step */}
           {curStep === 2 && (
-            <SelectPlan plan={plan} period={period} dispatch={dispatch} />
+            <SelectPlan
+              plan={plan}
+              period={period}
+              dispatch={dispatch}
+              arcadeCost={arcadeCost}
+              advancedCost={advancedCost}
+              proCost={proCost}
+            />
           )}
+          {/* pick add-ons */}
           {curStep === 3 && (
             <PickAddOns
               onlineSelected={onlineSelected}
@@ -183,6 +197,7 @@ function App() {
               dispatch={dispatch}
             />
           )}
+          {/* confirmation step */}
           {curStep === 4 && (
             <FinishingStep
               plan={plan}
@@ -193,7 +208,9 @@ function App() {
               dispatch={dispatch}
             />
           )}
+          {/* thank you step */}
           {curStep === 5 && <ThankYou />}
+          {/* next/prev buttons on desktop view */}
           {mobileView && (
             <Buttons
               dispatch={dispatch}
@@ -203,6 +220,8 @@ function App() {
           )}
         </Steps>
       </div>
+
+      {/* next/prev buttons on mobile view */}
       {!mobileView && (
         <Buttons
           dispatch={dispatch}
@@ -315,7 +334,14 @@ function PersonalInfo({ name, dispatch, email, phoneNumber }) {
     </div>
   );
 }
-function SelectPlan({ plan, dispatch, period }) {
+function SelectPlan({
+  plan,
+  dispatch,
+  period,
+  arcadeCost,
+  advancedCost,
+  proCost,
+}) {
   return (
     <div className="select-plan-step">
       <h1>Select your plan</h1>
@@ -329,7 +355,7 @@ function SelectPlan({ plan, dispatch, period }) {
           <img src={arcadeIcon} alt="" />
 
           <p>Arcade</p>
-          <p>$9/mo</p>
+          <p>${arcadeCost}/mo</p>
           {period === "Yearly" && <p>2 months for free</p>}
         </div>
         <div
@@ -341,7 +367,7 @@ function SelectPlan({ plan, dispatch, period }) {
           <img src={advancedIcon} alt="" />
 
           <p>Advanced</p>
-          <p>$12/mo</p>
+          <p>${advancedCost}/mo</p>
           {period === "Yearly" && <p>2 months for free</p>}
         </div>
         <div
@@ -351,7 +377,7 @@ function SelectPlan({ plan, dispatch, period }) {
           <img src={proIcon} alt="" />
 
           <p>Pro</p>
-          <p>$15/mo</p>
+          <p>${proCost}/mo</p>
           {period === "Yearly" && <p>2 months for free</p>}
         </div>
       </div>
@@ -472,40 +498,6 @@ function FinishingStep({
       <div className="total-sum-up">
         <p>Total (per {period.toLowerCase().slice(0, -2)})</p> <p>+$12/mo</p>
       </div>
-    </div>
-  );
-}
-
-// Buttons components
-function Buttons({ curStep, dispatch, mobileView }) {
-  let stepClassName = curStep !== 1 ? "buttons" : "buttons-step-1";
-  let mobileClassName = mobileView ? " " : "mobile-buttons ";
-  return (
-    <div className={`${stepClassName} ${mobileClassName}`}>
-      {curStep > 1 && curStep < 5 && (
-        <button
-          className={"back-button"}
-          onClick={() => dispatch({ type: "backStepChange" })}
-        >
-          Go Back
-        </button>
-      )}
-      {curStep <= 3 && (
-        <button
-          className={"next-button"}
-          onClick={() => dispatch({ type: "nextStepChange" })}
-        >
-          Next
-        </button>
-      )}
-      {curStep === 4 && (
-        <button
-          className={"confirm-button"}
-          onClick={() => dispatch({ type: "nextStepChange" })}
-        >
-          Confirm
-        </button>
-      )}
     </div>
   );
 }
